@@ -1,0 +1,46 @@
+<script type="module">
+        const input = document.querySelector("textarea");
+        const chatHistory = document.querySelector("div");
+        input.addEventListener("keydown", async (e) => {
+            if (e.key === "Enter") {
+                fetch('/postChat', {
+                    method: "post",
+                    body: JSON.stringify(input.value)
+                })
+                input.value = '';
+            }
+        })
+        setInterval(async () => {
+            const updatedChat = await fetch('/getChat').then(response => response.json())
+            chatHistory.innerHTML = '';
+            updatedChat.forEach(message => {
+                const messageContainer = document.createElement("p");
+                messageContainer.textContent = message;
+                chatHistory.appendChild(messageContainer)
+            })
+        }, 200);
+    </script>
+
+
+    const server = http.createServer((pedido, resposta) => {
+    switch (pedido.url) {
+        case '/':
+            resposta.writeHead(200, { "Content-Type": "text/html" });
+            resposta.end(fs.readFileSync('./index.html'));
+            break;
+        case '/postChat':
+            pedido.on('data', (body) => {
+                const decodedMessage = JSON.parse(body);
+                updatedChat.push(decodedMessage);
+                resposta.writeHead(200, { "Content-Type": "application/json" });
+                resposta.end(JSON.stringify('okay'));
+            })
+            break;
+        case '/getChat':
+            resposta.writeHead(200, { "Content-Type": "application/json" });
+            resposta.end(JSON.stringify(updatedChat));
+            break;
+    }
+});
+
+como o fetch funciona.
